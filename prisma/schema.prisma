@@ -1,0 +1,112 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+
+datasource db {
+  provider  = "postgresql"
+  url  	    = env("DATABASE_URL")
+}
+
+model Profile {
+  id String @id @default(uuid())
+  userId String @unique
+  name String 
+  imageUrl String @db.Text 
+  email String @db.Text 
+
+  servers Server[]
+  members Member[]
+  channels Channel[]
+
+  createAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Server {
+  id String @id @default(uuid())
+  name String
+  imageUrl String @db.Text
+  inviteCode String @db.Text
+
+  profileId String
+  profile Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  members Member[]
+  channels Channel[] 
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([profileId])
+}
+
+enum MemberRole {
+  ADMIN
+  MODERATOR
+  GUEST
+}
+
+model Member {
+  id String @id @default(uuid())
+  role MemberRole @default(GUEST)
+
+  profileId String
+  profile Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+    
+  serverId String
+  server Server @relation(fields: [serverId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updateAt DateTime @updatedAt
+
+  @@index([profileId])
+  @@index([serverId])
+}
+
+enum ChannelType {
+  TEXT 
+  AUDIO 
+  VIDEO
+}
+
+model Channel {
+  id String @id @default(uuid())
+  name String
+  type ChannelType @default(TEXT)
+
+  profileId String
+  profile Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  serverId String
+  server Server @relation(fields: [serverId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([serverId])
+  @@index([profileId])
+}
+
+
+// Explanation of Relationships
+
+// Profile and Server:
+// A Profile can own multiple Servers (servers field in Profile), and a Server is associated with one Profile (profile field in Server).
+// This is a one-to-many relationship where one Profile can own multiple Servers.
+
+// Profile and Member:
+// A Profile can be associated with multiple Members (members field in Profile), and a Member is linked to one Profile (profile field in Member).
+// This is also a one-to-many relationship, indicating that a user (Profile) can have different roles (Member) in different servers.
+
+// Profile and Channel:
+// A Profile can have multiple Channels (channels field in Profile), and a Channel is associated with one Profile (profile field in Channel).
+// This relationship allows a user (Profile) to manage or own multiple communication channels.
+
+// Server and Member:
+// A Server can have multiple Members (members field in Server), and a Member is linked to one Server (server field in Member).
+// This is another one-to-many relationship where a server can have multiple members, each with a specific role.
+
+// Server and Channel:
+// A Server can have multiple Channels (channels field in Server), and a Channel is associated with one Server (server field in Channel).
+// This relationship indicates that a server can have multiple channels for communication.
