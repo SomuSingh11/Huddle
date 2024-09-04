@@ -110,3 +110,8 @@ model Channel {
 // Server and Channel:
 // A Server can have multiple Channels (channels field in Server), and a Channel is associated with one Server (server field in Channel).
 // This relationship indicates that a server can have multiple channels for communication.
+
+
+// Important Commands : 
+// npx prisma generate
+// npx prisma db push
