@@ -1,7 +1,7 @@
 import { auth, currentUser } from "@clerk/nextjs/server";
 import { db } from "@/lib/db";
 
-// Loading Profile
+// Loading and Creating Profile
 export const initialProfile = async () => {
   const user = await currentUser();
 
