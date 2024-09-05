@@ -63,7 +63,7 @@ export const InitialModal = () => {
   // Function to handle form submission
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      await axios.post("/api/servers"); // Make a POST request to create a new server
+      await axios.post("/api/servers", values); // Make a POST request to create a new server
 
       form.reset(); // If the request is successful, reset the form fields to their default values
       router.refresh(); // Refresh the router to update any server-side rendered components or data
