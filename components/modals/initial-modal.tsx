@@ -3,6 +3,7 @@
 import * as z from "zod"; // Zod is a TypeScript-first schema declaration and validation library
 import { zodResolver } from "@hookform/resolvers/zod"; // Importing zodResolver for integrating Zod with react-hook-form
 import { useForm } from "react-hook-form"; // Importing useForm from react-hook-form to handle form logic
+import axios from "axios";
 
 import {
   Dialog,
@@ -26,6 +27,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { FileUpload } from "@/components/file-upload";
+import { useRouter } from "next/navigation";
 
 // Define schema for form validation using Zod
 const formSchema = z.object({
@@ -40,6 +42,8 @@ const formSchema = z.object({
 export const InitialModal = () => {
   // State to handle hydration error in Next.js
   const [isMounted, setIsMounted] = useState(false);
+
+  const router = useRouter();
 
   useEffect(() => {
     setIsMounted(true);
@@ -58,7 +62,15 @@ export const InitialModal = () => {
 
   // Function to handle form submission
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    console.log(values); // Log form values (to be replaced with actual submission logic)
+    try {
+      await axios.post("/api/servers"); // Make a POST request to create a new server
+
+      form.reset(); // If the request is successful, reset the form fields to their default values
+      router.refresh(); // Refresh the router to update any server-side rendered components or data
+      window.location.reload(); // Reload the page to ensure all the latest changes are reflected immediately
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   if (!isMounted) {
