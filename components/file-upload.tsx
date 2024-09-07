@@ -4,7 +4,7 @@ import { X } from "lucide-react";
 import Image from "next/image";
 
 import { UploadDropzone, UploadButton } from "@/lib/uploadthing";
-import "@uploadthing/react/styles.css";
+// import "@uploadthing/react/styles.css"; ---> This line is added in global.css as it was hiding the Navigation Bar
 
 interface FileUploadProps {
   onChange: (url?: string) => void;

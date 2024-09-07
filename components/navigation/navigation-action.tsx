@@ -4,12 +4,14 @@ import { Plus } from "lucide-react";
 // ActionTooltip is a REACT reusable UI component that wraps around a
 // child element (children) and displays a tooltip when the user interacts with the element.
 import { ActionTooltip } from "@/components/action-tooltip";
+import { useModal } from "@/hooks/use-modal-store";
 
 export const NavigationAction = () => {
+  const { onOpen } = useModal();
   return (
     <div>
       <ActionTooltip side="right" align="center" label="Add a server">
-        <button className="group flex items-center">
+        <button className="group flex items-center" onClick={() => onOpen("createServer")}>
           <div
             className="flex mx-3 h-[48px] w-[48px] 
       rounded-[24px] bg-background group-hover:rounded-[16px] 

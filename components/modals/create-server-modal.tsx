@@ -63,6 +63,7 @@ export const CreateServerModal = () => {
 
       form.reset(); // If the request is successful, reset the form fields to their default values
       router.refresh(); // Refresh the router to update any server-side rendered components or data
+      onClose();
     } catch (error) {
       console.log(error);
     }

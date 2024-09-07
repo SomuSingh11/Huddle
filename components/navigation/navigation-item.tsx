@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import { useParams, useRouter } from "next/navigation";
+import { redirect, useParams, useRouter } from "next/navigation";
 
 import { cn } from "@/lib/utils";
 import { ActionTooltip } from "@/components/action-tooltip";
@@ -21,10 +21,7 @@ export const NavigationItem = ({ id, name, imageUrl }: NavigationItemProps) => {
 
   return (
     <ActionTooltip side="right" align="center" label={name}>
-      <button
-        onClick={() => onClick}
-        className="group relative flex items-center"
-      >
+      <button onClick={onClick} className="group relative flex items-center">
         {/* Left indicator bar to show the selected state, dynamically changing height */}
         <div
           className={cn(
