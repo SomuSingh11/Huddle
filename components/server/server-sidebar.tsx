@@ -1,7 +1,10 @@
-import { currentProfile } from "@/lib/current-profile";
-import { redirect } from "next/navigation";
-import { db } from "@/lib/db";
 import { ChannelType } from "@prisma/client";
+import { redirect } from "next/navigation";
+
+import { currentProfile } from "@/lib/current-profile";
+import { db } from "@/lib/db";
+
+import { ServerHeader } from "@/components/server/server-header";
 
 interface ServerSidebarProps {
   serverId: string;
@@ -66,8 +69,7 @@ export const ServerSidebar = async ({ serverId }: ServerSidebarProps) => {
   // The UI rendering part: At this point, you can create the UI for displaying
   return (
     <div className="flex flex-col h-full text-primary w-full dark:bg-[#2B2D31] bg-[#F2F3F5]">
-      {" "}
-      Server Sidebar Component
+      <ServerHeader server={server} role={role} />
     </div>
   );
 };
