@@ -3,6 +3,7 @@
 import { CreateServerModal } from "@/components/modals/create-server-modal";
 
 import { useEffect, useState } from "react";
+import { InviteModal } from "@/components/modals/invite-modal";
 
 export const ModalProvider = () => {
   // TO Suppress Hydration ---- Preventing modals to be rendered on server side
@@ -18,6 +19,7 @@ export const ModalProvider = () => {
   return (
     <>
       <CreateServerModal />
+      <InviteModal />
     </>
   );
 };
