@@ -1,5 +1,7 @@
 "use client";
 
+import axios from "axios";
+
 import { Check, Copy, RefreshCcw } from "lucide-react";
 import { useState } from "react";
 
@@ -17,8 +19,8 @@ import { Button } from "@/components/ui/button";
 import { useOrigin } from "@/hooks/use-origin";
 
 export const InviteModal = () => {
-  const { isOpen, onClose, type, data } = useModal(); //Whenever invitation Modal is called in "server-header.tsx", server data is passed and hence is extracted
-  const origin = useOrigin();
+  const { onOpen, isOpen, onClose, type, data } = useModal(); //Whenever invitation Modal is called in "server-header.tsx", server data is passed and hence is extracted
+  const origin = useOrigin(); // Get the current origin URL
 
   const isModalOpen = isOpen && type === "invite";
   const { server } = data;
@@ -26,7 +28,7 @@ export const InviteModal = () => {
   const inviteUrl = `${origin}/invite/${server?.inviteCode}`;
 
   const [copied, setCopied] = useState(false);
-  const [loading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const onCopy = () => {
     navigator.clipboard.writeText(inviteUrl);
@@ -35,6 +37,21 @@ export const InviteModal = () => {
     setTimeout(() => {
       setCopied(false);
     }, 1000);
+  };
+
+  // onNew function generates a new invite link by making an API request, updates the modal with the new invite code.
+  const onNew = async () => {
+    try {
+      setIsLoading(true);
+      const response = await axios.patch(
+        `/api/servers/${server?.id}/invite-code` // API request to generate a new invite code
+      );
+      onOpen("invite", { server: response.data }); // Open modal with new invite data
+    } catch (error) {
+      console.log("onNew Error:", error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -53,10 +70,11 @@ export const InviteModal = () => {
           </Label>
           <div className="flex items-center mt-2 gap-x-2">
             <Input
+              disabled={isLoading}
               className="bg-zinc-300/50 border-0 focus-visible:ring-0 text-black focus-visible:ring-offset-0"
               value={inviteUrl}
             />
-            <Button size="icon" onClick={onCopy}>
+            <Button disabled={isLoading} size="icon" onClick={onCopy}>
               {copied ? (
                 <Check className="h-4 w-4" />
               ) : (
@@ -65,9 +83,11 @@ export const InviteModal = () => {
             </Button>
           </div>
           <Button
+            disabled={isLoading}
             variant="link"
             size="sm"
             className="text-xs text-zinc-500 mt-4"
+            onClick={onNew} // Generate a new invite link
           >
             Generate a new link
             <RefreshCcw className="h-4 w-4 ml-2" />
