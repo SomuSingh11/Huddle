@@ -1,5 +1,9 @@
 "use client";
 
+import qs from "query-string";
+import axios from "axios";
+import { useRouter } from "next/navigation";
+
 import {
   Check,
   Gavel,
@@ -36,6 +40,7 @@ import { useModal } from "@/hooks/use-modal-store";
 import { ServerWithMembersWithProfiles } from "@/types";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { UserAvatar } from "@/components/user-avatar";
+import { MemberRole } from "@prisma/client";
 
 const roleIconMap = {
   GUEST: null,
@@ -44,11 +49,36 @@ const roleIconMap = {
 };
 
 export const MembersModal = () => {
+  const router = useRouter();
   const { onOpen, isOpen, onClose, type, data } = useModal(); //Whenever invitation Modal is called in "server-header.tsx", server data is passed and hence is extracted
   const [loadingId, setLoadingId] = useState(""); // State to track the ID of a member that is being processed (e.g., kicked or role change)
 
   const isModalOpen = isOpen && type === "members"; // TypeScript type assertion: It tells TypeScript to treat data as an object that contains a server property of type ServerWithMembersWithProfiles.
   const { server } = data as { server: ServerWithMembersWithProfiles };
+
+  // Function to handle role change for a member
+  const onRoleChange = async (memberId: string, role: MemberRole) => {
+    try {
+      setLoadingId(memberId);
+
+      // Build the URL for the API request using query string parameters (serverId and memberId)
+      const url = qs.stringifyUrl({
+        url: `/api/members/${memberId}`,
+        query: {
+          serverId: server?.id,
+        },
+      });
+
+      const response = await axios.patch(url, { role });
+
+      router.refresh(); // Refresh the router to ensure the latest data is displayed
+      onOpen("members", { server: response.data }); // Reopen the "members" modal with updated server data from the response
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoadingId("");
+    }
+  };
 
   return (
     // The onOpenChange prop is a callback function that gets triggered whenever there is a change in the open state of the dialog (i.e., when the modal is opened or closed).
@@ -92,14 +122,20 @@ export const MembersModal = () => {
                           </DropdownMenuSubTrigger>
                           <DropdownMenuPortal>
                             <DropdownMenuSubContent>
-                              <DropdownMenuItem>
+                              <DropdownMenuItem
+                                onClick={() => onRoleChange(member.id, "GUEST")}
+                              >
                                 <Shield className="h-4 w-4 mr-2 " />
                                 Guest
                                 {member.role === "GUEST" && (
                                   <Check className="h-4 w-4 ml-auto" />
                                 )}
                               </DropdownMenuItem>
-                              <DropdownMenuItem>
+                              <DropdownMenuItem
+                                onClick={() =>
+                                  onRoleChange(member.id, "MODERATOR")
+                                }
+                              >
                                 <ShieldCheck className="h-4 w-4 mr-2 " />
                                 Moderator
                                 {member.role === "MODERATOR" && (
