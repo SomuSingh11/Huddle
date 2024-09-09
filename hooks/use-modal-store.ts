@@ -4,7 +4,7 @@
 import { Server } from "@prisma/client";
 import { create } from "zustand"; // The create function from Zustand is used to create a custom store that manages state.
 
-export type ModalType = "createServer" | "invite" | "editServer";
+export type ModalType = "createServer" | "invite" | "editServer" | "members";
 
 // Define the shape of the data that can be associated with a modal : Ex: We open up a invite Modal that needs information about the Server.
 interface ModalData {
