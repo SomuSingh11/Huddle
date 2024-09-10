@@ -57,7 +57,7 @@ const InviteCodePage = async ({ params }: InviteCodePageProps) => {
 
   // After joining the server, redirect to the server page
   if (server) {
-    return redirect(`/server/${server.id}`);
+    return redirect(`/servers/${server.id}`);
   }
 
   // If the server was not found or updated, return null (Will handle errors here)
