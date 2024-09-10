@@ -100,7 +100,10 @@ export const ServerHeader = ({ server, role }: ServerHeaderProps) => {
 
         {/* Admin-only option to delete the server */}
         {isAdmin && (
-          <DropdownMenuItem className="text-rose-500 px-3 py-2 text-sm cursor-pointer">
+          <DropdownMenuItem
+            onClick={() => onOpen("deleteServer", { server })}
+            className="text-rose-500 px-3 py-2 text-sm cursor-pointer"
+          >
             Delete Server
             <Trash2 className="h-4 w-4 ml-auto" />
           </DropdownMenuItem>
