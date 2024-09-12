@@ -140,6 +140,7 @@ export const ServerSidebar = async ({ serverId }: ServerSidebarProps) => {
         </div>
         <Separator className="bg-zinc-200  dark:bg-zinc-700  rounded-md my-2" />
 
+        {/* 3 -----> Rendering Text Channels section if textChannels are available */}
         {!!textChannels?.length && (
           <div className="mb-2">
             <ServerSection
@@ -149,6 +150,50 @@ export const ServerSidebar = async ({ serverId }: ServerSidebarProps) => {
               label="Text Channels"
             />
             {textChannels?.map((channel) => {
+              return (
+                <ServerChannel
+                  key={channel.id}
+                  channel={channel}
+                  role={role}
+                  server={server}
+                />
+              );
+            })}
+          </div>
+        )}
+
+        {/* 4 -----> Rendering Voice Channels section if audioChannels are available */}
+        {!!audioChannels?.length && (
+          <div className="mb-2">
+            <ServerSection
+              sectionType="channels"
+              channelType={ChannelType.AUDIO}
+              role={role}
+              label="Voice Channels"
+            />
+            {audioChannels?.map((channel) => {
+              return (
+                <ServerChannel
+                  key={channel.id}
+                  channel={channel}
+                  role={role}
+                  server={server}
+                />
+              );
+            })}
+          </div>
+        )}
+
+        {/* 5 -----> Rendering Video Channels section if videoChannels are available */}
+        {!!videoChannels?.length && (
+          <div className="mb-2">
+            <ServerSection
+              sectionType="channels"
+              channelType={ChannelType.VIDEO}
+              role={role}
+              label="Video Channels"
+            />
+            {videoChannels?.map((channel) => {
               return (
                 <ServerChannel
                   key={channel.id}
