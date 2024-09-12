@@ -5,9 +5,13 @@ import { Hash, Mic, ShieldAlert, ShieldCheck, Video } from "lucide-react";
 import { currentProfile } from "@/lib/current-profile";
 import { db } from "@/lib/db";
 
-import { ServerHeader } from "@/components/server/server-header";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Separator } from "@/components/ui/separator";
+
 import { ServerSearch } from "@/components/server/server-search";
+import { ServerHeader } from "@/components/server/server-header";
+import { ServerSection } from "@/components/server/server-section";
+import { ServerChannel } from "@/components/server/server-channel";
 
 interface ServerSidebarProps {
   serverId: string;
@@ -86,7 +90,10 @@ export const ServerSidebar = async ({ serverId }: ServerSidebarProps) => {
   // The UI rendering part: At this point, you can create the UI for displaying
   return (
     <div className="flex flex-col h-full text-primary w-full dark:bg-[#2B2D31] bg-[#F2F3F5]">
+      {/* 1 ------> ServerHeader component implementing server actions */}
       <ServerHeader server={server} role={role} />
+
+      {/* 2 -------> Scrollable area for displaying the main content */}
       <ScrollArea className="flex-1 px-3">
         <div className="mt-2">
           {/* ServerSearch component to display searchable sections for channels and members */}
@@ -131,6 +138,28 @@ export const ServerSidebar = async ({ serverId }: ServerSidebarProps) => {
             ]}
           />
         </div>
+        <Separator className="bg-zinc-200  dark:bg-zinc-700  rounded-md my-2" />
+
+        {!!textChannels?.length && (
+          <div className="mb-2">
+            <ServerSection
+              sectionType="channels"
+              channelType={ChannelType.TEXT}
+              role={role}
+              label="Text Channels"
+            />
+            {textChannels?.map((channel) => {
+              return (
+                <ServerChannel
+                  key={channel.id}
+                  channel={channel}
+                  role={role}
+                  server={server}
+                />
+              );
+            })}
+          </div>
+        )}
       </ScrollArea>
     </div>
   );
