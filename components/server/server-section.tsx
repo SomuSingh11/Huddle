@@ -8,7 +8,7 @@ import { useModal } from "@/hooks/use-modal-store";
 import { ChannelType, MemberRole } from "@prisma/client";
 import { ActionTooltip } from "@/components/action-tooltip";
 
-interface ServerActionProps {
+interface ServerSectionProps {
   label: string;
   role?: MemberRole;
   sectionType: "channels" | "members";
@@ -22,7 +22,7 @@ export const ServerSection = ({
   sectionType,
   channelType,
   server,
-}: ServerActionProps) => {
+}: ServerSectionProps) => {
   const { onOpen } = useModal();
 
   return (
