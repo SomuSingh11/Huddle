@@ -5,7 +5,7 @@ import * as z from "zod"; // Zod is a TypeScript-first schema declaration and va
 import { zodResolver } from "@hookform/resolvers/zod"; // Importing zodResolver for integrating Zod with react-hook-form
 import { useForm } from "react-hook-form"; // Importing useForm from react-hook-form to handle form logic
 import axios from "axios";
-import { ChannelType } from "@prisma/client";
+import { useEffect } from "react";
 
 import {
   Dialog,
@@ -36,6 +36,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useParams, useRouter } from "next/navigation";
 import { useModal } from "@/hooks/use-modal-store";
+import { ChannelType } from "@prisma/client";
 
 // Define schema for form validation using Zod
 const formSchema = z.object({
@@ -51,20 +52,30 @@ const formSchema = z.object({
 });
 
 export const CreateChannelModal = () => {
-  const { isOpen, onClose, type } = useModal();
+  const { isOpen, onClose, type, data } = useModal();
   const router = useRouter();
   const params = useParams();
 
   const isModalOpen = isOpen && type === "createChannel";
+  const { channelType } = data;
 
   // Initialize the form with Zod validation and default values
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
-      type: ChannelType.TEXT,
+      type: channelType || ChannelType.TEXT, // Default channel type, fallback to TEXT if no channelType is provided
     },
   });
+
+  // Effect hook to update the form values when 'channelType' changes
+  useEffect(() => {
+    if (channelType) {
+      form.setValue("type", channelType); // Set the 'type' field in the form to the provided 'channelType'
+    } else {
+      form.setValue("type", ChannelType.TEXT); // Fallback to setting 'type' to 'TEXT' if no 'channelType' is provided
+    }
+  }, [channelType, form]);
 
   const isLoading = form.formState.isSubmitting; // Loading state to disable form elements during submission
 
