@@ -1,7 +1,7 @@
 // The useModal hook provides centralized control over the modal dialogs in your application,
 // allowing you to open and close modals and track the currently active modal type.
 
-import { ChannelType, Server } from "@prisma/client";
+import { Channel, ChannelType, Server } from "@prisma/client";
 import { create } from "zustand"; // The create function from Zustand is used to create a custom store that manages state.
 
 export type ModalType =
@@ -11,12 +11,14 @@ export type ModalType =
   | "members"
   | "createChannel"
   | "leaveServer"
-  | "deleteServer";
+  | "deleteServer"
+  | "deleteChannel";
 
 // Define the shape of the data that can be associated with a modal : Ex: We open up a invite Modal that needs information about the Server.
 interface ModalData {
   server?: Server;
   channelType?: ChannelType;
+  channel?: Channel;
 }
 
 interface ModalStore {
