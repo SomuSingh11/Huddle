@@ -12,7 +12,8 @@ export type ModalType =
   | "createChannel"
   | "leaveServer"
   | "deleteServer"
-  | "deleteChannel";
+  | "deleteChannel"
+  | "editChannel";
 
 // Define the shape of the data that can be associated with a modal : Ex: We open up a invite Modal that needs information about the Server.
 interface ModalData {
