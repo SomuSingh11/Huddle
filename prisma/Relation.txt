@@ -1,0 +1,56 @@
+
+Explanation of Relationships
+
+Profile and Server:
+A Profile can own multiple Servers (`servers` field in Profile), and each Server is associated with one Profile (`profile` field in Server).
+This is a one-to-many relationship where one Profile (user) can create and manage multiple servers.
+The `profileId` field in the Server model acts as a foreign key linking it to the Profile model. The `onDelete: Cascade` ensures that if a Profile is deleted, all associated Servers will also be deleted.
+
+Profile and Member:
+A Profile can have multiple Members (`members` field in Profile), and each Member is linked to one Profile (`profile` field in Member).
+This is another one-to-many relationship, where a single user (Profile) can have different roles (Member) across various servers.
+The `profileId` field in the Member model acts as a foreign key linking it to the Profile model. `onDelete: Cascade` ensures that when a Profile is deleted, all corresponding memberships (Members) are also deleted.
+
+Profile and Channel:
+A Profile can have multiple Channels (`channels` field in Profile), and each Channel is associated with one Profile (`profile` field in Channel).
+This one-to-many relationship indicates that a user (Profile) can manage multiple communication channels within their servers.
+The `profileId` field in the Channel model serves as a foreign key, ensuring that when a Profile is deleted, all associated Channels are also deleted (`onDelete: Cascade`).
+
+Server and Member:
+A Server can have multiple Members (`members` field in Server), and each Member is linked to one Server (`server` field in Member).
+This one-to-many relationship means that a server can host various members with different roles (e.g., Admin, Moderator, Guest).
+The `serverId` field in the Member model acts as a foreign key, and `onDelete: Cascade` ensures that if a Server is deleted, all its associated Members are also deleted.
+
+Server and Channel:
+A Server can have multiple Channels (`channels` field in Server), and each Channel is linked to one Server (`server` field in Channel).
+This one-to-many relationship indicates that a server can contain various channels for communication (e.g., text, audio, video).
+The `serverId` field in the Channel model serves as a foreign key. `onDelete: Cascade` ensures that deleting a Server will result in the deletion of all its associated Channels.
+
+Member and Message:
+A Member can send multiple Messages (`messages` field in Member), and each Message is linked to one Member (`member` field in Message).
+This one-to-many relationship means that members can send messages in different channels they are part of.
+The `memberId` field in the Message model acts as a foreign key, linking it to the Member model. `onDelete: Cascade` ensures that if a Member is deleted, all their Messages are also deleted.
+
+Channel and Message:
+A Channel can have multiple Messages (`messages` field in Channel), and each Message is linked to one Channel (`channel` field in Message).
+This one-to-many relationship indicates that channels can host several messages, which members can send.
+The `channelId` field in the Message model serves as a foreign key, linking it to the Channel model. `onDelete: Cascade` ensures that if a Channel is deleted, all its Messages are also deleted.
+
+Member and Conversation:
+A Conversation is between two Members (`memberOne` and `memberTwo` in the Conversation model). The `conversationsInitiated` and `conversationsReceived` fields in Member model define these relationships.
+This relationship is managed using a self-referencing one-to-many association, where a Member can initiate and receive multiple conversations.
+The fields `memberOneId` and `memberTwoId` in the Conversation model serve as foreign keys that establish the relationship between two members.
+`onDelete: Cascade` ensures that if any of the Members is deleted, the associated Conversations are also removed.
+
+Conversation and DirectMessage:
+A Conversation can have multiple DirectMessages (`directMessages` field in Conversation), and each DirectMessage is linked to one Conversation (`conversation` field in DirectMessage).
+This one-to-many relationship means that members can exchange messages within their private conversation.
+The `conversationId` field in the DirectMessage model acts as a foreign key linking it to the Conversation model. `onDelete: Cascade` ensures that if a Conversation is deleted, all its DirectMessages are also deleted.
+
+
+Important Commands: 
+1. `npx prisma generate`
+   - This command generates the Prisma Client based on the models defined in the schema file. Run this command whenever you make changes to the schema to update the client with the new model structure.
+
+2. `npx prisma db push`
+   - This command applies the changes in your Prisma schema to the connected database. It updates the database to match the model definitions, creating or modifying tables and fields as needed.

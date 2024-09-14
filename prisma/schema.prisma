@@ -15,9 +15,9 @@ model Profile {
   imageUrl String @db.Text 
   email String @db.Text 
 
-  servers Server[]
-  members Member[]
-  channels Channel[]
+  servers Server[] // One-to-many relation: A profile can own multiple servers.
+  members Member[] // One-to-many relation: A profile can be a member of multiple servers.
+  channels Channel[] // One-to-many relation: A profile can create multiple channels.
 
   createAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -29,16 +29,16 @@ model Server {
   imageUrl String @db.Text
   inviteCode String @unique
 
-  profileId String
-  profile Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  profileId String // Foreign key for the owner (profile) of the server.
+  profile Profile @relation(fields: [profileId], references: [id], onDelete: Cascade) // Relation to the profile that owns the server.
 
-  members Member[]
-  channels Channel[] 
+  members Member[] // One-to-many relation: A server can have multiple members.
+  channels Channel[] // One-to-many relation: A server can have multiple channels.
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@index([profileId])
+  @@index([profileId]) // Index on `profileId` to speed up queries filtering by profile.
 }
 
 enum MemberRole {
@@ -51,11 +51,18 @@ model Member {
   id String @id @default(uuid())
   role MemberRole @default(GUEST)
 
-  profileId String
-  profile Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  profileId String  // Foreign key for the profile of the member.
+  profile Profile @relation(fields: [profileId], references: [id], onDelete: Cascade) // Relation to the profile.
     
-  serverId String
-  server Server @relation(fields: [serverId], references: [id], onDelete: Cascade)
+  serverId String // Foreign key for the server where the member belongs.
+  server Server @relation(fields: [serverId], references: [id], onDelete: Cascade) // Relation to the server.
+
+  messages Message[] // One-to-many relation: A member can send multiple messages
+  directMessages DirectMessage[]  // One-to-many relation: A member can send multiple direct messages.
+
+  conversationsInitiated Conversation[] @relation("MemberOne") // Conversations initiated by this member.
+  conversationsReceived Conversation[] @relation("MemberTwo") // Conversations received by this member.
+ 
 
   createdAt DateTime @default(now())
   updateAt DateTime @updatedAt
@@ -75,11 +82,13 @@ model Channel {
   name String
   type ChannelType @default(TEXT)
 
-  profileId String
+  profileId String // Foreign key for the profile that created the channel.
   profile Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
 
-  serverId String
+  serverId String // Foreign key for the server where the channel exists.
   server Server @relation(fields: [serverId], references: [id], onDelete: Cascade)
+
+  messages Message[] // One-to-many relation: A channel can contain multiple messages.
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -89,29 +98,65 @@ model Channel {
 }
 
 
-// Explanation of Relationships
+// Explanation: Represents a message in a channel, containing text, optional file URL, sender (Member), and channel (Channel) relations.
+model Message {
+  id String @id @default(uuid())
+  content String @db.Text
 
-// Profile and Server:
-// A Profile can own multiple Servers (servers field in Profile), and a Server is associated with one Profile (profile field in Server).
-// This is a one-to-many relationship where one Profile can own multiple Servers.
+  fileUrl String? @db.Text
 
-// Profile and Member:
-// A Profile can be associated with multiple Members (members field in Profile), and a Member is linked to one Profile (profile field in Member).
-// This is also a one-to-many relationship, indicating that a user (Profile) can have different roles (Member) in different servers.
+  memberId String // Foreign key for the member who sent the message.
+  member Member @relation(fields: [memberId], references: [id], onDelete: Cascade)
 
-// Profile and Channel:
-// A Profile can have multiple Channels (channels field in Profile), and a Channel is associated with one Profile (profile field in Channel).
-// This relationship allows a user (Profile) to manage or own multiple communication channels.
+  channelId String // Foreign key for the channel where the message was sent.
+  channel Channel @relation(fields: [channelId], references: [id], onDelete: Cascade)
 
-// Server and Member:
-// A Server can have multiple Members (members field in Server), and a Member is linked to one Server (server field in Member).
-// This is another one-to-many relationship where a server can have multiple members, each with a specific role.
+  deleted Boolean @default(false) // Indicates if the message is deleted.
 
-// Server and Channel:
-// A Server can have multiple Channels (channels field in Server), and a Channel is associated with one Server (server field in Channel).
-// This relationship indicates that a server can have multiple channels for communication.
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([channelId])
+  @@index([memberId])
+}
 
 
-// Important Commands : 
-// npx prisma generate
-// npx prisma db push
+// Explanation: Represents a private conversation between two Members. It enforces unique conversations and contains direct messages.
+model Conversation {
+  id String @id @default(uuid())
+
+  memberOneId String // Foreign key for the initiating member.
+  memberOne Member @relation("MemberOne", fields: [memberOneId], references: [id], onDelete: Cascade)
+
+  memberTwoId String // Foreign key for the receiving member.
+  memberTwo Member @relation("MemberTwo", fields: [memberTwoId], references: [id], onDelete: Cascade)
+
+  directMessages DirectMessage[] // One-to-many relation: A conversation contains multiple direct messages.
+
+  @@index([memberOneId])
+  @@index([memberTwoId])
+
+  @@unique([memberOneId, memberTwoId]) // Ensures unique conversation between two members.
+}
+
+
+// Explanation: Similar to Message, this model represents direct messages between members within a private Conversation.
+model DirectMessage {
+  id String @id @default(uuid())
+  content String @db.Text
+  fileUrl String? @db.Text
+
+  memberId String // Foreign key for the member who sent the direct message.
+  member Member @relation(fields: [memberId], references: [id], onDelete: Cascade)
+
+  conversationId String // Foreign key for the conversation.
+  conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  deleted Boolean @default(false)  // Indicates if the direct message is deleted.
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([memberId])
+  @@index([conversationId])
+}
