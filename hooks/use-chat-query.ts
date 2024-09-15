@@ -20,7 +20,7 @@ export const useChatQuery = ({
   const { isConnected } = useSocket();
 
   // Function to fetch messages from the API
-  const fetchMessages = async ({ pageParam = 0 }: { pageParam: number }) => {
+  const fetchMessages = async ({ pageParam }: { pageParam?: any }) => {
     // Build the URL with query parameters including pagination (cursor) and the specified paramKey/value
     const url = qs.stringifyUrl(
       {
@@ -44,7 +44,7 @@ export const useChatQuery = ({
       queryFn: fetchMessages, // Function that fetches data from the API
       getNextPageParam: (lastPage) => lastPage?.nextCursor, // Determine the next page parameter based on the last page's response
       refetchInterval: isConnected ? false : 1000, // Set refetch interval; if connected, disable refetching
-      initialPageParam: 0, // Start pagination from page 0
+      initialPageParam: undefined,
     });
 
   // Return necessary properties and functions for managing and accessing chat data
