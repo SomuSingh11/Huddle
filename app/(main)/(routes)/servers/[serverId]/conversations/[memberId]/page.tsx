@@ -1,5 +1,67 @@
-const MemberIdPage = () => {
-  return <div>Member Id Page!</div>;
+import { redirect } from "next/navigation";
+import { auth } from "@clerk/nextjs/server";
+
+import { getOrCreateConversation } from "@/lib/conversation";
+import { currentProfile } from "@/lib/current-profile";
+import { db } from "@/lib/db";
+import { ChatHeader } from "@/components/chat/chat-header";
+
+interface MemberIdPageProps {
+  params: {
+    memberId: string;
+    serverId: string;
+  };
+}
+
+const MemberIdPage = async ({ params }: MemberIdPageProps) => {
+  const profile = await currentProfile();
+
+  if (!profile) {
+    return auth().redirectToSignIn();
+  }
+
+  // Find the current member in the specified server using the profile ID
+  const currentMember = await db.member.findFirst({
+    where: {
+      serverId: params.serverId,
+      profileId: profile.id,
+    },
+    include: {
+      profile: true,
+    },
+  });
+
+  if (!currentMember) {
+    return redirect("/");
+  }
+
+  // Attempt to get or create a conversation between the current member and the specified member
+  const conversation = await getOrCreateConversation(
+    currentMember.id,
+    params.memberId
+  );
+
+  if (!conversation) {
+    return redirect(`/servers/${params.serverId}`);
+  }
+
+  // Extract memberOne and memberTwo from the conversation
+  const { memberOne, memberTwo } = conversation;
+
+  // Determine the other member in the conversation
+  const otherMember =
+    memberOne.profileId === profile.id ? memberTwo : memberOne;
+
+  return (
+    <div className="bg-white dark:bg-[#313338] flex flex-col h-full">
+      <ChatHeader
+        serverId={params.serverId}
+        name={otherMember.profile.name}
+        type="coversation"
+        imageUrl={otherMember.profile.imageUrl}
+      />
+    </div>
+  );
 };
 
 export default MemberIdPage;
