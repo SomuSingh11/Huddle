@@ -12,7 +12,7 @@ export const SocketIndicator = () => {
         variant={"outline"}
         className="bg-yellow-600 text-white border-none"
       >
-        No Connection: Refreshing status...
+        Fallback: Polling every 1s
       </Badge>
     );
   }
@@ -22,7 +22,7 @@ export const SocketIndicator = () => {
       variant={"outline"}
       className="bg-emerald-600 text-white border-none"
     >
-      Connected: Instant updates active
+      Live: Real-time updates
     </Badge>
   );
 };
