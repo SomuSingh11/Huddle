@@ -52,8 +52,8 @@ const ChannelIdPage = async ({ params }: ChannelIdPage) => {
         member={member}
         chatId={channel.id}
         type="channel"
-        apiUrl="/api/messages"
-        socketUrl="/api/socket/messages"
+        apiUrl="/api/messages" // API endpoint to fetch messages
+        socketUrl="/api/socket/messages" // WebSocket URL for real-time messaging
         socketQuery={{
           channelId: channel.id,
           serverId: channel.serverId,
@@ -64,7 +64,7 @@ const ChannelIdPage = async ({ params }: ChannelIdPage) => {
       <ChatInput
         name={channel.name}
         type="channel"
-        apiUrl="/api/socket/messages"
+        apiUrl="/api/socket/messages" // API endpoint for sending messages
         query={{
           channelId: channel.id,
           serverId: channel.serverId,
