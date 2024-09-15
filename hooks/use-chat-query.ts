@@ -7,7 +7,7 @@ import { useSocket } from "@/components/providers/socket-provider"; // Importing
 interface ChatQueryProps {
   queryKey: string; // Key to identify the query in the cache
   apiUrl: string; // URL for the API endpoint
-  paramKey: "channelId" | "conversation"; // Key used in the query string
+  paramKey: "channelId" | "conversationId"; // Key used in the query string
   paramValue: string; // Value for the query parameter
 }
 
