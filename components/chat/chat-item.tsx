@@ -5,8 +5,17 @@ import { Edit, FileIcon, ShieldAlert, ShieldCheck, Trash } from "lucide-react";
 
 import { UserAvatar } from "@/components/user-avatar";
 import { ActionTooltip } from "@/components/action-tooltip";
+import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+
+import * as z from "zod";
+import axios from "axios";
+import qs from "query-string";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 
 interface ChatItemProps {
@@ -30,6 +39,10 @@ const roleIconMap = {
   ["ADMIN"]: <ShieldAlert className="h-4 w-4 ml-2 text-rose-500" />,
 };
 
+const formSchema = z.object({
+  content: z.string().min(1),
+});
+
 export const ChatItem = ({
   id,
   content,
@@ -45,6 +58,45 @@ export const ChatItem = ({
   // State for editing and deleting a message
   const [isEditing, setIsEditing] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+
+  // Add an event listener to handle the 'Escape' key for canceling edit mode
+  useEffect(() => {
+    const handleKeyDown = (event: any) => {
+      if (event.key === "Escape" || event.keyCode === 27) {
+        setIsEditing(false);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
+
+  // Initialize form with React Hook Form and Zod for validation
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      content: content,
+    },
+  });
+
+  // Form submission state
+  const isLoading = form.formState.isSubmitting;
+
+  // Handle form submission
+  const onSubmit = (values: z.infer<typeof formSchema>) => {
+    try {
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // Reset form content whenever the 'content' prop changes
+  useEffect(() => {
+    form.reset({
+      content: content,
+    });
+  }, [content]);
 
   // Determine the file type (e.g., 'pdf', 'jpg')
   const fileType = fileUrl?.split(".").pop();
@@ -131,6 +183,43 @@ export const ChatItem = ({
               )}
             </p>
           )}
+
+          {/* Render form for editing the message */}
+          {!fileUrl && isEditing && (
+            <Form {...form}>
+              <form
+                className="flex items-center w-full gap-x-2 pt-2"
+                onSubmit={form.handleSubmit(onSubmit)}
+              >
+                <FormField
+                  control={form.control}
+                  name="content"
+                  render={({ field }) => (
+                    <FormItem className="flex-1">
+                      <FormControl>
+                        <div className="relativer w-full">
+                          <Input
+                            disabled={isLoading}
+                            className="p-2 bg-zinc-200/90 dark:bg-zinc-700/75 border-none 
+                            border-0 focus-visible:ring-0 focus-visible:ring-offset-0 text-zinc-600
+                             dark:text-zinc-200"
+                            placeholder="Edited Message"
+                            {...field}
+                          />
+                        </div>
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+                <Button disabled={isLoading} size="sm" variant="primary">
+                  Save
+                </Button>
+              </form>
+              <span className="text-[10px] mt-1 text-zinc-400">
+                Press escape to cancel, enter to save
+              </span>
+            </Form>
+          )}
         </div>
       </div>
 
@@ -144,6 +233,7 @@ export const ChatItem = ({
           {canEditMessage && (
             <ActionTooltip label={"Edit"}>
               <Edit
+                onClick={() => setIsEditing(true)}
                 className="cursor-pointer ml-auto w-4 h-4 text-zinc-500
                hover:text-zinc-600 dark:hover:text-zinc-300 transition"
               />
