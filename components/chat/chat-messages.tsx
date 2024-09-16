@@ -8,6 +8,7 @@ import { Member, Message, Profile } from "@prisma/client";
 import { ChatWelcome } from "./chat-welcome";
 import { useChatQuery } from "@/hooks/use-chat-query";
 import { ChatItem } from "./chat-item";
+import { useChatSocket } from "@/hooks/use-chat-socket";
 
 const DATE_FORMAT = "d MMM yyyy, HH:mm";
 
@@ -42,6 +43,10 @@ export const ChatMessages = ({
 }: ChatMessagesProps) => {
   const queryKey = `chat:${chatId}`;
 
+  // These are same as defined in pages/socket/messages
+  const addKey = `chat:${chatId}:messages`;
+  const updateKey = `chat:${chatId}:messages:update`;
+
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, status } =
     useChatQuery({
       queryKey,
@@ -49,6 +54,10 @@ export const ChatMessages = ({
       paramKey, // "channelId"
       paramValue, // {channel.id}
     });
+
+  // Set up WebSocket listeners for real-time chat updates using the `useChatSocket` hook.
+  // This will listen for add and update events to automatically update the chat data in the UI.
+  useChatSocket({ queryKey, addKey, updateKey });
 
   if (status === "pending") {
     return (
