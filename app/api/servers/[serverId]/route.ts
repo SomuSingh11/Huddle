@@ -41,7 +41,7 @@ export async function PATCH(
 
     const server = await db.server.update({
       where: {
-        id: params.serverId,
+        id: params?.serverId,
         profileId: profile.id,
       },
       data: {

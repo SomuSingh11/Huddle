@@ -21,7 +21,7 @@ const ServerIdLayout = async ({
   // Fetch the server from the database using the server ID and check if the current profile is a member
   const server = await db.server.findUnique({
     where: {
-      id: params.serverId,
+      id: params?.serverId,
       members: {
         some: {
           profileId: profile.id, // Ensure that the profile is a member of the server
@@ -38,7 +38,7 @@ const ServerIdLayout = async ({
   return (
     <div className="h-full ">
       <div className="hidden md:flex h-full w-60 z-20 flex-col fixed inset-y-0 ">
-        <ServerSidebar serverId={params.serverId} />
+        <ServerSidebar serverId={params?.serverId} />
       </div>
       <main className="h-full md:ml-60">{children}</main>
     </div>

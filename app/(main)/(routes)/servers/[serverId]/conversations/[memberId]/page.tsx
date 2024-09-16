@@ -29,7 +29,7 @@ const MemberIdPage = async ({ params, searchParams }: MemberIdPageProps) => {
   // Find the current member in the specified server using the profile ID
   const currentMember = await db.member.findFirst({
     where: {
-      serverId: params.serverId,
+      serverId: params?.serverId,
       profileId: profile.id,
     },
     include: {

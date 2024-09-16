@@ -85,7 +85,7 @@ export const CreateChannelModal = () => {
       const url = qs.stringifyUrl({
         url: `/api/channels`,
         query: {
-          serverId: params.serverId,
+          serverId: params?.serverId,
         },
       });
       await axios.post(url, values); // Make a POST request to create a new server
