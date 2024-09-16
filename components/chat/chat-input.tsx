@@ -43,8 +43,8 @@ export const ChatInput = ({ apiUrl, query, name, type }: ChatInputProps) => {
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       const url = qs.stringifyUrl({
-        url: apiUrl, // apiUrl="/api/socket/messages"
-        query: query, // The query parameters (e.g., channelId, serverId)
+        url: apiUrl, // apiUrl="/api/socket/messages" or "api/socket/direct-messages"
+        query: query, // The query parameters (e.g., channelId, serverId) or (conversatioId)
       });
       await axios.post(url, values);
 
