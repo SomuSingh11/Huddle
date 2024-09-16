@@ -17,6 +17,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
+import { useModal } from "@/hooks/use-modal-store";
 
 interface ChatItemProps {
   id: string;
@@ -57,7 +58,7 @@ export const ChatItem = ({
 }: ChatItemProps) => {
   // State for editing and deleting a message
   const [isEditing, setIsEditing] = useState(false);
-  const [isDeleting, setIsDeleting] = useState(false);
+  const { onOpen } = useModal();
 
   // Add an event listener to handle the 'Escape' key for canceling edit mode
   useEffect(() => {
@@ -250,6 +251,12 @@ export const ChatItem = ({
           )}
           <ActionTooltip label={"Delete"}>
             <Trash
+              onClick={() =>
+                onOpen("deleteMessage", {
+                  apiUrl: `${socketUrl}/${id}`, // "/api/socket/messages/[messageId]"
+                  query: socketQuery,
+                })
+              }
               className="cursor-pointer ml-auto w-4 h-4 text-zinc-500
                hover:text-zinc-600 dark:hover:text-zinc-300 transition"
             />
