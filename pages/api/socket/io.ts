@@ -15,7 +15,13 @@ const ioHandler = (req: NextApiRequest, res: NextApiResponseServerIo) => {
   // Check if Socket.IO server is already running
   if (!res.socket.server.io) {
     const path = "/api/socket/io"; // The path variable defines the custom path (/api/socket/io) where Socket.IO will listen for incoming connections.
-    const httpServer: NetServer = res.socket.server as any; // res.socket.server provides access to the underlying HTTP server used by Next.js. It is cast to NetServer using as any to ensure compatibility.
+    const httpServer = res.socket.server;
+    if (!(httpServer instanceof NetServer)) {
+      console.error(
+        "Expected res.socket.server to be an instance of NetServer."
+      );
+      return res.end();
+    } // res.socket.server provides access to the underlying HTTP server used by Next.js. It is cast to NetServer using as any to ensure compatibility.
 
     // Initialize a new Socket.IO server with the HTTP server and custom path
     const io = new ServeIO(httpServer, {
