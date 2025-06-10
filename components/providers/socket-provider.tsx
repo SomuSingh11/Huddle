@@ -23,7 +23,7 @@ export const useSocket = () => {
 
 // SocketProvider: A React component that wraps its children with SocketContext.Provider.
 export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
-  const [socket, setSocket] = useState(false);
+  const [socket, setSocket] = useState<any>(null);
   const [isConnected, setIsConnected] = useState(false);
 
   useEffect(() => {
