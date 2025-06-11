@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Open_Sans } from "next/font/google";
 import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
@@ -16,6 +16,19 @@ export const metadata: Metadata = {
   icons: {
     icon: "/meetme.png", // /public path
   },
+  manifest: "/manifest.json",
+  keywords: ["nextjs", "next14", "pwa", "next-pwa"],
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  minimumScale: 1,
+  viewportFit: "cover",
+  themeColor: [
+    { media: "(prefers-color-scheme: dark)", color: "#313338" },
+    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
+  ],
 };
 
 export default function RootLayout({
@@ -26,6 +39,10 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en" suppressHydrationWarning>
+        <head>
+          <link rel="icon" href="icons/huddle-512.png" />
+          <link rel="apple-touch-icon" href="icons/huddle-512.png" />
+        </head>
         <body className={cn(font.className, "bg-white dark:bg-[#313338]")}>
           <ThemeProvider
             attribute="class"
