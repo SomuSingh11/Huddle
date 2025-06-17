@@ -174,9 +174,12 @@ id | conversationId | memberId | content | fileUrl | deleted
 ![Screenshot from 2025-06-17 16-10-36](https://github.com/user-attachments/assets/3415733a-d2f5-4d18-b546-5d5fa7ceeae9)
 ![Screenshot from 2025-06-17 16-10-53](https://github.com/user-attachments/assets/ce197a54-50a3-4122-87db-716349fd4dc2)
 ![Screenshot from 2025-06-17 16-11-29](https://github.com/user-attachments/assets/4036a2f3-279c-4ed5-a75c-5c24bc8e373c)
-![Screenshot from 2025-06-17 16-12-14](https://github.com/user-attachments/assets/737bdd66-118c-4bb1-86a0-76d1144e0034)
 ![Screenshot from 2025-06-17 16-13-08](https://github.com/user-attachments/assets/50c9595f-e434-4de6-8102-5858ff73a485)
 ![Screenshot from 2025-06-17 16-13-40](https://github.com/user-attachments/assets/cd7997ce-9034-454f-ac6a-3d51f76a2439)
+![Screenshot from 2025-06-17 16-18-34](https://github.com/user-attachments/assets/e0039a9e-2015-4b4f-87ef-9849bc31ad7e)
+![Screenshot from 2025-06-17 16-19-32](https://github.com/user-attachments/assets/ec8550e6-7fa1-4db9-be12-7c6cebe1d5e5)
+![Screenshot from 2025-06-17 16-20-17](https://github.com/user-attachments/assets/86ca7ee9-c59d-459e-b8f0-3a842ef11c6c)
+
 
 ---
 
