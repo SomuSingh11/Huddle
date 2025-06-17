@@ -1,5 +1,5 @@
 # <img src="https://github.com/user-attachments/assets/432e504b-e49e-44c8-a1ff-17c3beccc2ee" alt="Huddle" width="35" /> Huddle - One Space. All Voices. 🔗 
-**Live Demo**: [https://huddle-app.vercel.app](https://huddle-mb7x.onrender.com/)
+**Live Demo**: [https://huddle-mb7x.onrender.com/](https://huddle-mb7x.onrender.com/)
 
 Huddle is a scalable, real-time communication platform built with modern technologies like **Next.js**, **Clerk**, **LiveKit**, **Prisma**, **Socket.IO**, and **Tailwind CSS**. Inspired by platforms like **Discord**, **Slack**, and **Microsoft Teams**, Huddle provides robust support for:
 
